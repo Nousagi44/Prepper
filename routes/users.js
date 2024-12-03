@@ -56,32 +56,25 @@ router.get('/login', redirectDashboard, (req, res) => {
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    const sql = 'SELECT * FROM users WHERE username = ?';
+    let sql = 'SELECT * FROM users WHERE username = ?';
     db.query(sql, [username], async (err, results) => {
         if (err) {
             console.error(err);
-            return res.render('login', { error: "An error occurred" });
-        }
-
-        if (results.length === 0) {
-            console.log('No user found');
-            return res.render('login', { error: "Invalid username or password" });
-        }
-
-        const user = results[0];
-        const match = await bcrypt.compare(password, user.password);
-
-        if (match) {
-            console.log('Login successful, redirecting to dashboard...');
-            req.session.user = {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-            };
-            return res.redirect('/dashboard');
+            res.render('login', { error: "An error occurred" });
+        } else if (results.length === 0) {
+            res.render('login', { error: "Invalid username or password" });
         } else {
-            console.log('Password mismatch');
-            return res.render('login', { error: "Invalid username or password" });
+            const user = results[0];
+            const match = await bcrypt.compare(password, user.password);
+            if (match) {
+                req.session.user = {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email
+                };
+                res.redirect(req.baseUrl + '/dashboard'); 
+                res.render('login', { error: "Invalid username or password" });
+            }
         }
     });
 });
