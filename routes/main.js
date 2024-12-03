@@ -15,7 +15,7 @@ const redirectLogin = (req, res, next) => {
 // Handle our routes
 router.get('/', function(req, res) {
     if (req.session.user) {
-        res.redirect('/dashboard');
+        res.redirect('/');
     } else {
         res.render('index');
     }

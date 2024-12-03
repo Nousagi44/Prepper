@@ -7,13 +7,13 @@ const axios = require('axios');
 // Middleware to redirect non-logged-in users to the login page
 const redirectLogin = (req, res, next) => {
     if (!req.session.user) {
-        res.redirect('/users/login'); // Redirect to login if not logged in
+        res.redirect('/users/login'); 
     } else {
-        next(); // Continue to the next middleware if logged in
+        next(); 
     }
 };
 
-// Function to execute SQL queries (assuming db is globally available)
+// Function to execute SQL queries 
 const executeQuery = (query, params) => {
     return new Promise((resolve, reject) => {
         db.query(query, params, (err, results) => {
@@ -128,7 +128,6 @@ async function getEarthquakeDataByCity(city, res, userId) {
     }
 }
 
-// Function: Get earthquake data by coordinates
 async function getEarthquakeDataByCoordinates(lat, lon, res, userId, cityName = 'Your Location') {
     try {
         const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${getPastDate(30)}&minmagnitude=2.5`;
@@ -140,20 +139,26 @@ async function getEarthquakeDataByCoordinates(lat, lon, res, userId, cityName = 
                 const quakeLat = feature.geometry.coordinates[1];
                 const quakeLon = feature.geometry.coordinates[0];
                 const distance = getDistanceFromLatLonInKm(lat, lon, quakeLat, quakeLon);
-                return { ...feature, distance };
+
+                // Sanitize location data
+                const sanitizedLocation = feature.properties.place
+                    ? feature.properties.place.normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+                    : 'Unknown Location';
+
+                return { ...feature, distance, sanitizedLocation };
             });
 
             earthquakesWithDistance.sort((a, b) => a.distance - b.distance);
             const closestEarthquakes = earthquakesWithDistance.slice(0, 12);
 
-            // Insert earthquake data into the database
+            // Insert sanitized earthquake data into the database
             const insertQuery = `
                 INSERT INTO earthquake_data (user_id, location, magnitude, depth)
                 VALUES ?
             `;
             const insertValues = closestEarthquakes.map(eq => [
                 userId,
-                eq.properties.place,
+                eq.sanitizedLocation,
                 eq.properties.mag,
                 eq.geometry.coordinates[2]
             ]);

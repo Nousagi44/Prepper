@@ -80,3 +80,12 @@ CREATE INDEX idx_news_published_at ON news_data(published_at);
 USE prepper_db;
 
 SELECT * FROM weather_data WHERE user_id = 1;
+
+-- Update database and table character set to utf8mb4
+ALTER DATABASE prepper_db CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- Update `earthquake_data` table to use utf8mb4
+ALTER TABLE earthquake_data CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Update `location` column specifically
+ALTER TABLE earthquake_data MODIFY location VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

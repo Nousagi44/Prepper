@@ -31,8 +31,10 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'prepper_app',
     password: 'Nandos123',
-    database: 'prepper_db'
+    database: 'prepper_db',
+    charset: 'utf8mb4' 
 });
+
 
 // Connect to the database
 db.connect((err) => {
