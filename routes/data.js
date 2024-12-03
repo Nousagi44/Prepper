@@ -13,6 +13,12 @@ const redirectLogin = (req, res, next) => {
     }
 };
 
+// Helper function to sanitize input
+const sanitizeInput = (input) => {
+    if (typeof input !== 'string') return input;
+    return input.replace(/[\u0000-\u001F\u007F-\u009F]/g, ''); // Remove control characters
+};
+
 // Function to execute SQL queries 
 const executeQuery = (query, params) => {
     return new Promise((resolve, reject) => {

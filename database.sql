@@ -89,3 +89,14 @@ ALTER TABLE earthquake_data CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_uni
 
 -- Update `location` column specifically
 ALTER TABLE earthquake_data MODIFY location VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- Update database character set to utf8mb4
+ALTER DATABASE prepper_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Update table character set to utf8mb4
+ALTER TABLE news_data CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Update specific columns in the `news_data` table
+ALTER TABLE news_data 
+  MODIFY description TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  MODIFY title VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  MODIFY source VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
