@@ -67,20 +67,18 @@ router.post('/login', (req, res) => {
             const user = results[0];
             const match = await bcrypt.compare(password, user.password);
             if (match) {
-                // Passwords match
                 req.session.user = {
                     id: user.id,
                     username: user.username,
                     email: user.email
                 };
-                res.redirect('/dashboard');
-            } else {
-                // Passwords don't match
+                res.redirect(req.baseUrl + '/dashboard'); 
                 res.render('login', { error: "Invalid username or password" });
             }
         }
     });
 });
+
 
 router.post('/preferences', (req, res) => {
     const { userId, defaultCity, alertThresholds, notificationPreferences } = req.body;

@@ -29,6 +29,7 @@ router.get('/dashboard', redirectLogin, function(req, res) {
     res.render('dashboard');
 });
 
+
 // Logout route
 router.get('/logout', redirectLogin, (req, res) => {
     req.session.destroy(err => {

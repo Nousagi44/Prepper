@@ -80,3 +80,7 @@ app.use('/api', apiRoutes);
 
 // Start the web app listening
 app.listen(port, () => console.log(`Prepper app listening on port ${port}!`));
+
+app.use((req, res, next) => {
+    res.status(404).render('404', { error: 'Page not found' });
+});
