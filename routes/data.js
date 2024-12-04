@@ -7,7 +7,7 @@ const axios = require('axios');
 // Middleware to redirect non-logged-in users to the login page
 const redirectLogin = (req, res, next) => {
     if (!req.session.user) {
-        res.redirect('/users/login'); 
+        res.redirect('/login'); 
     } else {
         next(); 
     }
