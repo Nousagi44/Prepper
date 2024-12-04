@@ -7,7 +7,7 @@ const axios = require('axios');
 // Middleware to redirect non-logged-in users to the login page
 const redirectLogin = (req, res, next) => {
     if (!req.session.user) {
-        res.redirect('/users/login'); 
+        res.redirect('/login'); 
     } else {
         next(); 
     }
@@ -16,7 +16,7 @@ const redirectLogin = (req, res, next) => {
 // Helper function to sanitize input
 const sanitizeInput = (input) => {
     if (typeof input !== 'string') return input;
-    return input.replace(/[\u0000-\u001F\u007F-\u009F]/g, ''); // Remove control characters
+    return input.replace(/[\u0000-\u001F\u007F-\u009F]/g, ''); 
 };
 
 // Function to execute SQL queries 
