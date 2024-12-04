@@ -72,7 +72,7 @@ router.post('/login', (req, res) => {
                     username: user.username,
                     email: user.email
                 };
-                res.redirect(req.baseUrl + 'users/dashboard'); // Dynamically include the base path
+                res.redirect('dashboard'); // Dynamically include the base path
             } else {
                 res.render('login', { error: "Invalid username or password" });
             }
