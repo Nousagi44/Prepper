@@ -16,12 +16,12 @@ const redirectDashboard = (req, res, next) => {
 
 
 // Registration page
-router.get('/users/register', redirectDashboard, (req, res) => {
+router.get('/register', redirectDashboard, (req, res) => {
     res.render('register');
 });
 
 // Handle registration
-router.post('/users/register', async (req, res) => {
+router.post('/register', async (req, res) => {
     const { username, password, email } = req.body;
 
     try {
@@ -48,12 +48,12 @@ router.post('/users/register', async (req, res) => {
 });
 
 // Login page
-router.get('/users/login', redirectDashboard, (req, res) => {
+router.get('/login', redirectDashboard, (req, res) => {
     res.render('login');
 });
 
 // Handle login
-router.post('/users/login', (req, res) => {
+router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     let sql = 'SELECT * FROM users WHERE username = ?';
