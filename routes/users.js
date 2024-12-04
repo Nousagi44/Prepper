@@ -21,7 +21,7 @@ router.get('/users/register', redirectDashboard, (req, res) => {
 });
 
 // Handle registration
-router.post('/register', async (req, res) => {
+router.post('/users/register', async (req, res) => {
     const { username, password, email } = req.body;
 
     try {
