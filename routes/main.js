@@ -12,6 +12,12 @@ const redirectLogin = (req, res, next) => {
     }
 };
 
+
+router.get('/dashboard', redirectLogin, function(req, res) {
+    res.render('dashboard');
+});
+
+
 // Handle our routes
 router.get('/', function(req, res) {
     if (req.session.user) {
@@ -23,10 +29,6 @@ router.get('/', function(req, res) {
 
 router.get('/about', function(req, res) {
     res.render('about');
-});
-
-router.get('/dashboard', redirectLogin, function(req, res) {
-    res.render('dashboard');
 });
 
 
