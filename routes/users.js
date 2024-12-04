@@ -48,12 +48,12 @@ router.post('/register', async (req, res) => {
 });
 
 // Login page
-router.get('/login', redirectDashboard, (req, res) => {
-    res.render('login');
+router.get('/users/login', redirectDashboard, (req, res) => {
+    res.render('/users/login');
 });
 
 // Handle login
-router.post('/login', (req, res) => {
+router.post('/users/login', (req, res) => {
     const { username, password } = req.body;
 
     let sql = 'SELECT * FROM users WHERE username = ?';
@@ -74,7 +74,7 @@ router.post('/login', (req, res) => {
                 };
                 res.redirect(req.baseUrl + '/'); // Dynamically include the base path
             } else {
-                res.render('login', { error: "Invalid username or password" });
+                res.render('/users/login', { error: "Invalid username or password" });
             }
         }
     });
