@@ -6,7 +6,7 @@ const router = express.Router();
 // Middleware function to redirect non-logged-in users to login page
 const redirectLogin = (req, res, next) => {
     if (!req.session.user) {
-        res.redirect('/users/login');  // Redirect to the login page if not logged in
+        res.redirect('/login');  // Redirect to the login page if not logged in
     } else {
         next();  // Continue to the next middleware if logged in
     }
