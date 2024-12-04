@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 // Middleware function to redirect logged-in users to dashboard
 const redirectDashboard = (req, res, next) => {
     if (req.session.user) {
-        res.redirect('/dashboard');
+        res.redirect('/');
     } else {
         next();
     }
@@ -72,7 +72,7 @@ router.post('/login', (req, res) => {
                     username: user.username,
                     email: user.email
                 };
-                res.redirect(req.baseUrl + '/dashboard'); // Dynamically include the base path
+                res.redirect(req.baseUrl + '/'); // Dynamically include the base path
             } else {
                 res.render('login', { error: "Invalid username or password" });
             }
