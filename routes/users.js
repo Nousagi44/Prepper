@@ -52,19 +52,22 @@ router.get('/login', redirectDashboard, (req, res) => {
     res.render('login');
 });
 
-// Handle login
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
+    console.log("Login Attempt:", username); // Log login attempt
 
     let sql = 'SELECT * FROM users WHERE username = ?';
     db.query(sql, [username], async (err, results) => {
         if (err) {
-            console.error(err);
+            console.error("Database Error:", err);
             res.render('login', { error: "An error occurred" });
         } else if (results.length === 0) {
+            console.log("Invalid Username:", username);
             res.render('login', { error: "Invalid username or password" });
         } else {
             const user = results[0];
+            console.log("User Found:", user);
+
             const match = await bcrypt.compare(password, user.password);
             if (match) {
                 req.session.user = {
@@ -72,13 +75,17 @@ router.post('/login', (req, res) => {
                     username: user.username,
                     email: user.email
                 };
-                res.redirect(req.baseUrl + '/dashboard');
+                console.log("Session after setting user:", req.session);
+                res.redirect('/dashboard'); 
             } else {
+                console.log("Password Mismatch for User:", username);
                 res.render('login', { error: "Invalid username or password" });
             }
         }
     });
 });
+
+
 
 
 router.post('/preferences', (req, res) => {

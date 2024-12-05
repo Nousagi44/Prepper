@@ -23,7 +23,7 @@ app.use(express.json());
 // Set up public folder (for css and static js)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Enable CORS for all routes (optional, remove if not needed)
+// Enable CORS for all routes 
 app.use(cors());
 
 // Define the database connection
