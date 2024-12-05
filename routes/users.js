@@ -13,6 +13,19 @@ const redirectDashboard = (req, res, next) => {
     }
 };
 
+// Middleware function to redirect non-logged-in users to login page
+const redirectLogin = (req, res, next) => {
+    if (!req.session.user) {
+        res.redirect('/login');  // Redirect to the login page if not logged in
+    } else {
+        next();  // Continue to the next middleware if logged in
+    }
+};
+
+
+router.get('/dashboard', redirectLogin, function(req, res) {
+    res.render('dashboard');
+});
 
 
 // Registration page
