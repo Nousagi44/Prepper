@@ -23,7 +23,7 @@ const redirectLogin = (req, res, next) => {
 };
 
 
-router.get('/dashboard', redirectLogin, function(req, res) {
+router.get('/user/dashboard', redirectLogin, function(req, res) {
     res.render('dashboard');
 });
 
