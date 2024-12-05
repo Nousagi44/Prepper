@@ -462,6 +462,39 @@ async function getNewsByCoordinates(lat, lon, res, userId, cityName = 'Your Loca
         });
     }
 }
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(sendPosition, handleError);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function sendPosition(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        console.log("Latitude:", latitude, "Longitude:", longitude);
+        window.location.href = '/data/airquality?lat=' + latitude + '&lon=' + longitude;
+    }
+
+    function handleError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                alert("The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+            default:
+                alert("An unknown error occurred.");
+                break;
+        }
+    }
+
 
 // Route for YouTube Guides Page
 router.get('/youtube-guides', (req, res) => {
