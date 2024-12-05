@@ -71,7 +71,7 @@ router.post('/login', (req, res) => {
                     username: user.username,
                     email: user.email
                 };
-                res.redirect(req.baseUrl + '/'); 
+                res.redirect(req.baseUrl + '/dashboard'); 
             } else {
                 res.render('login', { error: "Invalid username or password" });
             }
