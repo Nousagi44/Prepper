@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
                 const insertQuery = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
                 db.query(insertQuery, [username, hashedPassword, email], (err, results) => {
                     if (err) throw err;
-                    res.status(201).json({ message: 'User registered successfully' });
+                    res.redirect('../dashboard');
                 });
             }
         });
