@@ -53,9 +53,10 @@ router.post('/register', async (req, res) => {
                     if (err) throw err;
                 
                 });
-                res.redirect('../dashboard');
+               
             }
         });
+        res.redirect('../dashboard');
     } catch (err) {
         res.status(500).json({ error: 'An error occurred during registration' });
     }
