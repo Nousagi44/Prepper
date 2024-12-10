@@ -56,7 +56,7 @@ router.post('/register', async (req, res) => {
                
             }
         });
-        res.redirect('../user/login');  // Redirect to the login page after successful registration
+        res.redirect('../users/login');  // Redirect to the login page after successful registration
 
     } catch (err) {
         res.status(500).json({ error: 'An error occurred during registration' });
