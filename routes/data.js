@@ -467,21 +467,35 @@ async function getNewsByCoordinates(lat, lon, res, userId, cityName = 'Your Loca
         });
     }
 }
+    // Function to get the user's location
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(sendPosition, handleError);
+            // Request user's current position
+            navigator.geolocation.getCurrentPosition(
+                sendPosition,
+                handleError,
+                { enableHighAccuracy: true } // Ensure higher accuracy if possible
+            );
         } else {
             alert("Geolocation is not supported by this browser.");
         }
     }
 
-    function sendPosition(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        console.log("Latitude:", latitude, "Longitude:", longitude);
-        window.location.href = '/data/airquality?lat=' + latitude + '&lon=' + longitude;
+    // Callback when location is retrieved successfully
+     function sendPosition(position) {
+        const latitude = position.coords.latitude; // Latitude of the user
+        const longitude = position.coords.longitude; // Longitude of the user
+        const accuracy = position.coords.accuracy; // Accuracy of the location in meters
+
+        console.log("Latitude:", latitude);
+        console.log("Longitude:", longitude);
+        console.log("Accuracy (meters):", accuracy);
+
+        // Redirect the user to the back-end route with location parameters
+        window.location.href = `/data/airquality?lat=${latitude}&lon=${longitude}`;
     }
 
+    // Error handling when retrieving location fails
     function handleError(error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -498,7 +512,12 @@ async function getNewsByCoordinates(lat, lon, res, userId, cityName = 'Your Loca
                 alert("An unknown error occurred.");
                 break;
         }
+        console.error("Geolocation error:", error.message);
     }
+
+    // Call `getLocation` to retrieve user's location
+    getLocation();
+
 
 
 // Route for YouTube Guides Page
