@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 // Middleware function to redirect logged-in users to dashboard
 const redirectDashboard = (req, res, next) => {
     if (req.session.user) {
-        res.redirect('../dashboard');
+        res.redirect('/dashboard');
     } else {
         next();
     }
@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
                 const insertQuery = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
                 db.query(insertQuery, [username, hashedPassword, email], (err, results) => {
                     if (err) throw err;
-                    res.redirect('../dashboard');
+                    res.redirect('/dashboard');
                 });
             }
         });
