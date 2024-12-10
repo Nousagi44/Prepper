@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 // Middleware function to redirect logged-in users to dashboard
 const redirectDashboard = (req, res, next) => {
     if (req.session.user) {
-        res.redirect('/dashboard');
+        res.redirect('../dashboard');
     } else {
         next();
     }
