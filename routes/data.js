@@ -69,7 +69,6 @@ router.get('/weather', redirectLogin, async (req, res) => {
 });
 
 
-
 // Function: Fetch weather data from Weatherbit API
 async function getWeatherData(city) {
     try {
@@ -206,18 +205,15 @@ function getPastDate(daysAgo) {
 
 // Function: Fetch air quality data by city or coordinates
 router.get('/airquality', redirectLogin, async (req, res) => {
-    console.log('1') 
-
     const city = req.query.city;
     const latitude = req.query.lat;
     const longitude = req.query.lon;
     const userId = req.session.user.id; // Get user ID from session
-    console.log('lon',longitude,'lat', latitude) 
+
     if (city) {
         await getAirQualityDataByCity(city, res, userId);
     } else if (latitude && longitude) {
         await getAirQualityDataByCoordinates(latitude, longitude, res, userId);
-
     } else {
         res.render('airquality', { city: null, airQualityData: null, error: null });
     }
@@ -247,12 +243,10 @@ async function getAirQualityDataByCity(city, res, userId) {
 
 // Function: Fetch air quality data by coordinates
 async function getAirQualityDataByCoordinates(lat, lon, res, userId, cityName = 'Your Location') {
-    console.log('2') 
     try {
         const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,us_aqi`;
         const response = await axios.get(url);
         const airQualityData = response.data;
-        console.log(response)
 
         if (airQualityData.hourly && airQualityData.hourly.time.length > 0) {
             const latestIndex = airQualityData.hourly.time.length - 1;
@@ -271,7 +265,7 @@ async function getAirQualityDataByCoordinates(lat, lon, res, userId, cityName = 
                 INSERT INTO air_quality_data (user_id, city, aqi_index, pollutant_level)
                 VALUES (?, ?, ?, ?)
             `;
-            const pollutantLevel = `PM2.5: ${pm2_5}, PM10: ${pm10}`; // Example of combining pollutant levels
+            const pollutantLevel = `PM2.5: ${pm2_5}, PM10: ${pm10}`;
             const insertParams = [
                 userId,
                 cityName,
@@ -467,58 +461,6 @@ async function getNewsByCoordinates(lat, lon, res, userId, cityName = 'Your Loca
         });
     }
 }
-    // Function to get the user's location
-    function getLocation() {
-        if (navigator.geolocation) {
-            // Request user's current position
-            navigator.geolocation.getCurrentPosition(
-                sendPosition,
-                handleError,
-                { enableHighAccuracy: true } // Ensure higher accuracy if possible
-            );
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
-
-    // Callback when location is retrieved successfully
-     function sendPosition(position) {
-        const latitude = position.coords.latitude; // Latitude of the user
-        const longitude = position.coords.longitude; // Longitude of the user
-        const accuracy = position.coords.accuracy; // Accuracy of the location in meters
-
-        console.log("Latitude:", latitude);
-        console.log("Longitude:", longitude);
-        console.log("Accuracy (meters):", accuracy);
-
-        // Redirect the user to the back-end route with location parameters
-        window.location.href = `/data/airquality?lat=${latitude}&lon=${longitude}`;
-    }
-
-    // Error handling when retrieving location fails
-    function handleError(error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                alert("User denied the request for Geolocation.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                alert("Location information is unavailable.");
-                break;
-            case error.TIMEOUT:
-                alert("The request to get user location timed out.");
-                break;
-            case error.UNKNOWN_ERROR:
-            default:
-                alert("An unknown error occurred.");
-                break;
-        }
-        console.error("Geolocation error:", error.message);
-    }
-
-    // Call `getLocation` to retrieve user's location
-    getLocation();
-
-
 
 // Route for YouTube Guides Page
 router.get('/youtube-guides', (req, res) => {
