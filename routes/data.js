@@ -31,49 +31,73 @@ const executeQuery = (query, params) => {
     });
 };
 
-// Route: Fetch and display weather data by city
+// Route: Fetch and display weather data by city or coordinates
 router.get('/weather', redirectLogin, async (req, res) => {
     const city = req.query.city;
+    const lat = req.query.lat;
+    const lon = req.query.lon;
     const userId = req.session.user.id; // Get user ID from session
 
-    if (!city) {
-        res.render('weather', { city: null, weatherData: null, error: null });
-    } else {
-        try {
-            const weatherData = await getWeatherData(city);
+    try {
+        let weatherData = null;
+        let usedLocation = null;
 
-            if (weatherData) {
-                // Insert weather data into the database
-                const insertQuery = `
-                    INSERT INTO weather_data (user_id, city, temperature, humidity, conditions, uv_index)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                `;
-                const insertParams = [
-                    userId,
-                    city,
-                    weatherData.temp,
-                    weatherData.rh,
-                    weatherData.weather.description,
-                    weatherData.uv
-                ];
-
-                await executeQuery(insertQuery, insertParams);
-            }
-
-            res.render('weather', { weatherData, city, error: null });
-        } catch (err) {
-            console.error('Error fetching/storing weather data:', err);
-            res.render('weather', { error: "Could not retrieve weather data", city, weatherData: null });
+        // If latitude and longitude are provided, use them to fetch the weather data
+        if (lat && lon) {
+            weatherData = await getWeatherData(null, lat, lon);
+            usedLocation = `Lat: ${lat}, Lon: ${lon}`;
+        } else if (city) {
+            // Otherwise, if a city is provided, fetch data by city
+            weatherData = await getWeatherData(city);
+            usedLocation = city;
         }
+
+        if (!weatherData) {
+            // If no location was provided or data couldn't be fetched, show empty view
+            return res.render('weather', { city: null, weatherData: null, error: null });
+        }
+
+        // Insert weather data into the database
+        const insertQuery = `
+            INSERT INTO weather_data (user_id, city, temperature, humidity, conditions, uv_index)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        const insertParams = [
+            userId,
+            usedLocation,
+            weatherData.temp,
+            weatherData.rh,
+            weatherData.weather.description,
+            weatherData.uv
+        ];
+
+        await executeQuery(insertQuery, insertParams);
+
+        res.render('weather', { weatherData, city: usedLocation, error: null });
+    } catch (err) {
+        console.error('Error fetching/storing weather data:', err);
+        res.render('weather', { error: "Could not retrieve weather data", city: null, weatherData: null });
     }
 });
 
 
 // Function: Fetch weather data from Weatherbit API
-async function getWeatherData(city) {
+// This function tries to fetch data by city if city is provided,
+// otherwise it uses the latitude and longitude.
+async function getWeatherData(city, lat, lon) {
     try {
-        const apiKey = process.env.WEATHERBIT_API_KEY || '24db3939b32e4192bb6d80966f2c2c4b'; // Use env variable if set
-        const url = `https://api.weatherbit.io/v2.0/current?city=${encodeURIComponent(city)}&key=${apiKey}`;
+        const apiKey = process.env.WEATHERBIT_API_KEY || '24db3939b32e4192bb6d80966f2c2c4b';
+        let url;
+
+        if (city) {
+            url = `https://api.weatherbit.io/v2.0/current?city=${encodeURIComponent(city)}&key=${apiKey}`;
+        } else if (lat && lon) {
+            url = `https://api.weatherbit.io/v2.0/current?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&key=${apiKey}`;
+        } else {
+            // If no location data is provided, just return null
+            return null;
+        }
+
         const response = await axios.get(url);
         const weatherDataArray = response.data.data;
 
@@ -94,6 +118,7 @@ async function getWeatherData(city) {
         throw err;
     }
 }
+
 
 // Route: Fetch earthquake data
 router.get('/earthquakes', redirectLogin, async (req, res) => {
