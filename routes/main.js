@@ -33,13 +33,13 @@ router.get('/about', function(req, res) {
 
 
 // Logout route
-router.get('./logout', redirectLogin, (req, res) => {
+router.get('/logout', redirectLogin, (req, res) => {
     req.session.destroy(err => {
         if (err) {
-            return res.redirect('./');  // Redirect to home if there's an error
+            return res.redirect('/');  // Redirect to home if there's an error
         }
         res.clearCookie('connect.sid');
-        res.redirect('./');
+        res.redirect('/');
     });
 });
 
