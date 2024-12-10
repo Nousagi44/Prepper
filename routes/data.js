@@ -248,6 +248,7 @@ async function getAirQualityDataByCoordinates(lat, lon, res, userId, cityName = 
         const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,us_aqi`;
         const response = await axios.get(url);
         const airQualityData = response.data;
+        console.log(response)
 
         if (airQualityData.hourly && airQualityData.hourly.time.length > 0) {
             const latestIndex = airQualityData.hourly.time.length - 1;
