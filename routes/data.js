@@ -206,15 +206,18 @@ function getPastDate(daysAgo) {
 
 // Function: Fetch air quality data by city or coordinates
 router.get('/airquality', redirectLogin, async (req, res) => {
+    console.log('1') 
+
     const city = req.query.city;
     const latitude = req.query.lat;
     const longitude = req.query.lon;
     const userId = req.session.user.id; // Get user ID from session
-
+    console.log('lon',longitude,'lat', latitude) 
     if (city) {
         await getAirQualityDataByCity(city, res, userId);
     } else if (latitude && longitude) {
         await getAirQualityDataByCoordinates(latitude, longitude, res, userId);
+
     } else {
         res.render('airquality', { city: null, airQualityData: null, error: null });
     }
@@ -244,6 +247,7 @@ async function getAirQualityDataByCity(city, res, userId) {
 
 // Function: Fetch air quality data by coordinates
 async function getAirQualityDataByCoordinates(lat, lon, res, userId, cityName = 'Your Location') {
+    console.log('2') 
     try {
         const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,us_aqi`;
         const response = await axios.get(url);
